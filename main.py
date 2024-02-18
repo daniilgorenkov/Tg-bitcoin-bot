@@ -45,7 +45,7 @@ async def set_target_price(message:types.Message):
         await message.answer("Неправильно введены значения")
         
     if max_value.isdigit() and min_value.isdigit():
-        await message.answer(f"Установлены следующие значения, max:{max_value}, min: {min_value}\nИнформация по курсу обновляется раз в час")
+        await message.answer(f"Установлены следующие значения, max:{max_value}, min: {min_value}\nИнформация по курсу обновляется раз в 5 минут")
     else:
         await message.answer(f"Введено неправильно значение")
     
