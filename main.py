@@ -1,11 +1,27 @@
 from aiogram import Bot,Dispatcher
 from aiogram.dispatcher.filters import CommandStart,Command
 from bot_config import BOT_TOKEN
-from prices import get_BTC_price, get_USDT_price, get_RUB_price
+from functions import get_BTC_price, get_USDT_price, get_RUB_price, load_volume_model, load_price_model,predict
 import logging
+import numpy as np
 from aiogram import types
 import asyncio
 import datetime
+import pickle as pkl
+import pandas as pd
+
+volume_model = load_volume_model()
+price_model = load_price_model()
+
+volume_cols = ["day","month","year",
+               "day_of_week_1","day_of_week_2","day_of_week_3",
+               "day_of_week_4","day_of_week_5","day_of_week_6",
+               "is_covid","is_war"]
+
+price_cols = ["Vol.","day","month",
+              "year","day_of_week_1","day_of_week_2",
+              "day_of_week_3","day_of_week_4","day_of_week_5",
+              "day_of_week_6","is_covid","is_war"]
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot=bot)
@@ -18,7 +34,7 @@ async def start_message(message:types.Message):
     
 @dp.message_handler(Command("help"))
 async def help_message(message:types.Message):
-    text = "Бот знает следующие команды:\n/start - запуск бота\n/now - показывает текущий курс биткоина и доллара\n/set_price - установка таргетного значения"
+    text = "Бот знает следующие команды:\n/start - запуск бота\n/now - показывает текущий курс биткоина и доллара\n/set_price - установка таргетного значения\n /predict_price"
     
     await message.answer(text=text)
 
@@ -28,7 +44,18 @@ async def send_current_price(message:types.Message):
         USDT_price = float(get_USDT_price().replace(",",""))
         await message.answer(f"Цена 1 BTC к USD: {round(BTC_price,ndigits=2)}")
         await message.answer(f"Цена 1 USDT к рублю: {round(USDT_price * get_RUB_price(),ndigits=2)}")
-     
+
+
+@dp.message_handler(Command("predict_price"))
+async def get_date_predict(message:types.Message):
+    text = """Предсказания делаются на 5 дней, подождите идет обработка запроса"""
+    await message.answer(text)
+    
+    prediction = predict(volume_model,price_model,volume_cols,price_cols)
+
+    photo = open('pred_graph.png', 'rb')
+    await message.answer_photo(photo)
+    
 
 @dp.message_handler(Command("set_price"))
 async def ask_target_price(message:types.Message):
@@ -71,6 +98,8 @@ async def set_target_price(message:types.Message):
         
         else:
             continue
+
+
 
 
 @dp.message_handler()
