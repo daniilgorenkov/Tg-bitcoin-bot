@@ -108,9 +108,6 @@ def load_price_model():
         price_model = pkl.load(f)
         return price_model
 
-a = datetime.datetime.now()
-
-a + datetime.timedelta(1)
 
 def predict(volume_model,
             price_model,
@@ -144,9 +141,10 @@ def predict(volume_model,
     X_price = X[price_cols]
     price_prediction = np.exp(price_model.predict(X_price))
 
-    plt.title("График предсказаний цены BTC на 5 дней")
+    
     plt.figure().set_size_inches(12,8)
     sns.lineplot(price_prediction)
+    plt.title("График предсказаний цены BTC на 5 дней")
     plt.xlabel("Дни")
     plt.ylabel("Цена, USD")
 

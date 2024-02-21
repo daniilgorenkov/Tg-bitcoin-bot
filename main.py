@@ -34,7 +34,12 @@ async def start_message(message:types.Message):
     
 @dp.message_handler(Command("help"))
 async def help_message(message:types.Message):
-    text = "Бот знает следующие команды:\n/start - запуск бота\n/now - показывает текущий курс биткоина и доллара\n/set_price - установка таргетного значения\n /predict_price"
+    text = """
+Бот знает следующие команды:
+/start - запуск бота
+/now - показывает текущий курс биткоина и доллара
+/set_price - установка таргетного значения для сигналов
+/predict_price - предсказания образования цены на основе ИИ"""
     
     await message.answer(text=text)
 
@@ -51,7 +56,7 @@ async def get_date_predict(message:types.Message):
     text = """Предсказания делаются на 5 дней, подождите идет обработка запроса"""
     await message.answer(text)
     
-    prediction = predict(volume_model,price_model,volume_cols,price_cols)
+    predict(volume_model,price_model,volume_cols,price_cols)
 
     photo = open('pred_graph.png', 'rb')
     await message.answer_photo(photo)
