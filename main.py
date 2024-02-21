@@ -64,9 +64,15 @@ async def get_date_predict(message:types.Message):
 
 @dp.message_handler(Command("set_price"))
 async def ask_target_price(message:types.Message):
-    await message.answer(""""Введите значения следующим сообщением
-                         max
-                         min""")
+    text = """"Введите значения следующим сообщением
+max
+min
+Например:
+51200
+51000
+"""
+    
+    await message.answer(text)
 
 @dp.message_handler()
 async def set_target_price(message:types.Message):
