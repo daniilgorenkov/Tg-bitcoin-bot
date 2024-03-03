@@ -1,6 +1,6 @@
 from aiogram import Bot,Dispatcher
 from aiogram.dispatcher.filters import CommandStart,Command
-from bot_config import BOT_TOKEN
+from bot_config import BOT_TOKEN,admin_id
 from functions import get_BTC_price, get_USDT_price, get_RUB_price, load_volume_model, load_price_model,predict
 import logging
 import numpy as np
@@ -25,6 +25,11 @@ price_cols = ["Vol.","day","month",
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot=bot)
+
+# @dp.callback_query_handler()
+# async def srartup():
+#     text = "Бот запущен"
+#     await bot.send_message(chat_id=admin_id, text=text)
 
 @dp.message_handler(CommandStart())
 async def start_message(message:types.Message):
